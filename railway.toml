@@ -1,0 +1,11 @@
+# Deployment Configuration for Railway
+# This file tells Railway how to run your application
+
+# Install dependencies and run migrations before starting
+[build]
+builder = "NIXPACKS"
+
+[deploy]
+startCommand = "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn logistic_system.wsgi:application --bind 0.0.0.0:$PORT"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10

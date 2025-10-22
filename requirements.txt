@@ -74,3 +74,8 @@ django-crontab==0.7.1
 # File Storage (for cloud deployments)
 django-storages==1.14.2
 boto3==1.29.7
+
+# Production Server
+gunicorn==21.2.0
+dj-database-url==2.1.0
+whitenoise==6.6.0
