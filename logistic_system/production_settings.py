@@ -10,7 +10,29 @@ import os
 # Security Settings
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 SECRET_KEY = os.getenv('SECRET_KEY', SECRET_KEY)
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+
+# ALLOWED_HOSTS configuration
+# Supports both environment variable and automatic Railway domain detection
+allowed_hosts_env = os.getenv('ALLOWED_HOSTS', '')
+if allowed_hosts_env:
+    ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_env.split(',') if host.strip()]
+else:
+    # Default hosts for Railway and local development
+    ALLOWED_HOSTS = [
+        'localhost',
+        '127.0.0.1',
+        '.railway.app',  # Wildcard for all Railway subdomains
+        '.up.railway.app',  # New Railway domain format
+    ]
+
+# Add Railway's internal service domain if available
+railway_static_url = os.getenv('RAILWAY_STATIC_URL', '')
+if railway_static_url:
+    # Extract domain from RAILWAY_STATIC_URL
+    from urllib.parse import urlparse
+    parsed = urlparse(railway_static_url)
+    if parsed.netloc and parsed.netloc not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(parsed.netloc)
 
 # Database Configuration
 # Railway automatically provides DATABASE_URL
